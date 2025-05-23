@@ -1,6 +1,7 @@
 """
 Helper module to create a DL-envelope window page and merge PDFs.
 """
+
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -17,13 +18,19 @@ _PAGE_HEIGHT_MM = 297
 _WINDOW_WIDTH_MM = 100
 _WINDOW_HEIGHT_MM = 50
 _MARGIN_RIGHT_MM = 20  # Margin to right edge (mm)
-_MARGIN_TOP_MM = 50    # Margin to top edge (mm)
+_MARGIN_TOP_MM = 50  # Margin to top edge (mm)
 
 # Compute window origin (lower-left) and top in mm
 _WINDOW_X_MM = _PAGE_WIDTH_MM - _MARGIN_RIGHT_MM - _WINDOW_WIDTH_MM
 _WINDOW_Y_TOP_MM = _PAGE_HEIGHT_MM - _MARGIN_TOP_MM
 
-def create_window_page(text: str, output_path: str, show_window_border: bool, font: FontConfig | None = None) -> None:
+
+def create_window_page(
+    text: str,
+    output_path: str,
+    show_window_border: bool,
+    font: FontConfig | None = None,
+) -> None:
     """
     Create an A4 PDF page with given text placed at the envelope window position,
     right-aligned with specified margins.
@@ -41,16 +48,16 @@ def create_window_page(text: str, output_path: str, show_window_border: bool, fo
     # Register and use custom font if font.path is provided
     if font and font.path:
         # Register the font with a unique name (use font.name)
-        print('Using custom font:', font.name, 'from path:', font.path)
+        print("Using custom font:", font.name, "from path:", font.path)
         pdfmetrics.registerFont(TTFont(font.name, font.path))
         c.setFont(font.name, font.size)
     elif font:
-        print('Using installed font:', font.name)
+        print("Using installed font:", font.name)
         c.setFont(font.name, font.size)
     else:
-        print('Using default font: Helvetica')
+        print("Using default font: Helvetica")
         c.setFont("Helvetica", 12)  # Default font
-    line_height = 14 # Approximate line height in points for Helvetica 12
+    line_height = 14  # Approximate line height in points for Helvetica 12
 
     lines = text.splitlines()
     for i, line in enumerate(lines):
@@ -75,6 +82,7 @@ def create_window_page(text: str, output_path: str, show_window_border: bool, fo
     c.showPage()
     c.save()
 
+
 def merge_pdfs(pdf1_path: str, pdf2_path: str, output_path: str) -> None:
     """
     Merge two PDF files into one, concatenating pdf1 then pdf2.
@@ -97,9 +105,13 @@ def merge_pdfs(pdf1_path: str, pdf2_path: str, output_path: str) -> None:
     with open(output_path, "wb") as out_f:
         writer.write(out_f)
 
+
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Create a DL window page or merge two PDFs.")
+
+    parser = argparse.ArgumentParser(
+        description="Create a DL window page or merge two PDFs."
+    )
     sub = parser.add_subparsers(dest="command")
     # Sub-command: create
     p_create = sub.add_parser("create", help="Generate window page with text.")

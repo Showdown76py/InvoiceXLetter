@@ -1,18 +1,23 @@
 """
 This module provides functions to extract text from PDF files.
 """
+
 import io
 import enum
 
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import LTTextBox, LTTextLine
 
-class ExtractionType(enum.Enum):
-    CONTAINS = "contains" # Get the text that contains the given string
-    FOLLOWING = "following" # Get the text that follows the given string
-    PRECEDING = "preceding" # Get the text that precedes the given string
 
-def extract_text_custom(pdf_path: str, extraction_type: ExtractionType, search_string: str) -> str:
+class ExtractionType(enum.Enum):
+    CONTAINS = "contains"  # Get the text that contains the given string
+    FOLLOWING = "following"  # Get the text that follows the given string
+    PRECEDING = "preceding"  # Get the text that precedes the given string
+
+
+def extract_text_custom(
+    pdf_path: str, extraction_type: ExtractionType, search_string: str
+) -> str:
     """
     Extracts text from a PDF file according to the extraction type and search string.
 
@@ -27,10 +32,16 @@ def extract_text_custom(pdf_path: str, extraction_type: ExtractionType, search_s
     try:
         for page_num, page_layout in enumerate(extract_pages(pdf_path)):
             # Collect all textboxes as objects and as text
-            textboxes = [element for element in page_layout if isinstance(element, LTTextBox)]
+            textboxes = [
+                element for element in page_layout if isinstance(element, LTTextBox)
+            ]
             textbox_texts = []
             for tb in textboxes:
-                lines = [text_line.get_text().strip() for text_line in tb if isinstance(text_line, LTTextLine)]
+                lines = [
+                    text_line.get_text().strip()
+                    for text_line in tb
+                    if isinstance(text_line, LTTextLine)
+                ]
                 textbox_texts.append("\n".join([line for line in lines if line]))
 
             result = []

@@ -27,4 +27,4 @@ python invoiceXLetter.py <input_pdf>
 4. Open the output PDF to see the added page with the recipient's address. Make sure to print double-sided to have the address on the back of the invoice.
 
 ### License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the GNU General Public License v3.0. See the [LICENSE](LICENSE) file for details.
