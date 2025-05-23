@@ -1,5 +1,4 @@
 /.DS_Store
 /.venv
-/ebay-documents.pdf
-/ebay-documents_merged.pdf
+/ebay-documents*.pdf
 /out.txt

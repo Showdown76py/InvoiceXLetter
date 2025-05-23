@@ -48,7 +48,8 @@ def create_window_page(text: str, output_path: str, show_window_border: bool, fo
         print('Using installed font:', font.name)
         c.setFont(font.name, font.size)
     else:
-        raise Exception("Font configuration is required.")
+        print('Using default font: Helvetica')
+        c.setFont("Helvetica", 12)  # Default font
     line_height = 14 # Approximate line height in points for Helvetica 12
 
     lines = text.splitlines()
@@ -103,6 +104,7 @@ if __name__ == "__main__":
     # Sub-command: create
     p_create = sub.add_parser("create", help="Generate window page with text.")
     p_create.add_argument("text", type=str, help="Text to place inside the window.")
+
     p_create.add_argument("output", type=str, help="Output PDF path.")
     # Sub-command: merge
     p_merge = sub.add_parser("merge", help="Merge two PDFs.")
@@ -111,7 +113,7 @@ if __name__ == "__main__":
     p_merge.add_argument("output", type=str, help="Merged PDF output path.")
     args = parser.parse_args()
     if args.command == "create":
-        create_window_page(args.text, args.output)
+        create_window_page(args.text, args.output, False, None)
     elif args.command == "merge":
         merge_pdfs(args.pdf1, args.pdf2, args.output)
     else:
