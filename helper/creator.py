@@ -8,28 +8,18 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from PyPDF2 import PdfReader, PdfWriter
 
-from classes.config import FontConfig
+from classes.config import Config
+from helper.config import load_config
 
 _MM_TO_PT = 2.83465  # 1 mm = 2.83465 pt
 # A4 page size (mm)
 _PAGE_WIDTH_MM = 210
 _PAGE_HEIGHT_MM = 297
-# Envelope window size (mm)
-_WINDOW_WIDTH_MM = 100
-_WINDOW_HEIGHT_MM = 50
-_MARGIN_RIGHT_MM = 20  # Margin to right edge (mm)
-_MARGIN_TOP_MM = 50  # Margin to top edge (mm)
-
-# Compute window origin (lower-left) and top in mm
-_WINDOW_X_MM = _PAGE_WIDTH_MM - _MARGIN_RIGHT_MM - _WINDOW_WIDTH_MM
-_WINDOW_Y_TOP_MM = _PAGE_HEIGHT_MM - _MARGIN_TOP_MM
-
 
 def create_window_page(
     text: str,
     output_path: str,
-    show_window_border: bool,
-    font: FontConfig | None = None,
+    configuration: Config,
 ) -> None:
     """
     Create an A4 PDF page with given text placed at the envelope window position,
@@ -38,18 +28,26 @@ def create_window_page(
     Args:
         text (str): The multi-line text to print in the window.
         output_path (str): Path to the generated PDF file.
-        font (FontConfig | None): Font configuration for the text. If None, default font is used.
+        configuration (Config): The application configuration.
     """
-    # Convert window origin and top to points
-    x0_pt = _WINDOW_X_MM * _MM_TO_PT
-    y_top_pt = _WINDOW_Y_TOP_MM * _MM_TO_PT
+    display = configuration.display
+
+    window_width_mm = display.width
+    margin_right_mm = display.margin_right
+    margin_top_mm = display.margin_top
+
+    window_x_mm = _PAGE_WIDTH_MM - margin_right_mm - window_width_mm
+    window_y_top_mm = _PAGE_HEIGHT_MM - margin_top_mm
+
+    x0_pt = window_x_mm * _MM_TO_PT
+    y_top_pt = window_y_top_mm * _MM_TO_PT
 
     c = canvas.Canvas(output_path, pagesize=A4)
-    # Register and use custom font if font.path is provided
+    font = configuration.font
+    show_window_border = configuration.show_window_border
     if font and font.path:
-        # Register the font with a unique name (use font.name)
         print("Using custom font:", font.name, "from path:", font.path)
-        pdfmetrics.registerFont(TTFont(font.name, font.path))
+        pdfmetrics.registerFont(TTFont(font.name, font.path))  # type: ignore[reportUnknownMemberType]
         c.setFont(font.name, font.size)
     elif font:
         print("Using installed font:", font.name)
@@ -61,22 +59,20 @@ def create_window_page(
 
     lines = text.splitlines()
     for i, line in enumerate(lines):
-        # Compute Y position for each line (downwards from window top)
         current_y = y_top_pt - (i * line_height)
-        # Left-align text within window
         c.drawString(x0_pt, current_y, line)
 
     # Dessiner le contour de la fenêtre si demandé
     if show_window_border:
-        window_x_pt = _WINDOW_X_MM * _MM_TO_PT
-        window_w_pt = _WINDOW_WIDTH_MM * _MM_TO_PT
+        window_x_pt = window_x_mm * _MM_TO_PT
+        window_w_pt = window_width_mm * _MM_TO_PT
         text_height_pt = len(lines) * line_height
-        window_y_pt = (_WINDOW_Y_TOP_MM * _MM_TO_PT) - text_height_pt
+        window_y_pt = (window_y_top_mm * _MM_TO_PT) - text_height_pt
         window_h_pt = text_height_pt
         c.saveState()
         c.setStrokeColorRGB(0.8, 0.8, 0.8)  # gris clair
         c.setLineWidth(0.7)
-        c.rect(window_x_pt, window_y_pt, window_w_pt, window_h_pt, stroke=1, fill=0)
+        c.rect(window_x_pt, window_y_pt, window_w_pt, window_h_pt, stroke=1, fill=0)  #type: ignore[reportUnknownMemberType]
         c.restoreState()
 
     c.showPage()
@@ -101,9 +97,9 @@ def merge_pdfs(pdf1_path: str, pdf2_path: str, output_path: str) -> None:
     reader2 = PdfReader(pdf2_path)
     for page in reader2.pages:
         writer.add_page(page)
-    # Write out
+    # Write file
     with open(output_path, "wb") as out_f:
-        writer.write(out_f)
+        writer.write(out_f)  # type: ignore[reportUnknownMemberType]
 
 
 if __name__ == "__main__":
@@ -125,7 +121,7 @@ if __name__ == "__main__":
     p_merge.add_argument("output", type=str, help="Merged PDF output path.")
     args = parser.parse_args()
     if args.command == "create":
-        create_window_page(args.text, args.output, False, None)
+        create_window_page(args.text, args.output, configuration=load_config()[0])
     elif args.command == "merge":
         merge_pdfs(args.pdf1, args.pdf2, args.output)
     else:

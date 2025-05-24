@@ -1,0 +1,18 @@
+{
+    "extraction_type": "following",
+    "use_regex": false,
+    "search_string": "Adresse de livraison",
+    "show_window_border": false,
+    "font": {
+        "name": "Helvetica",
+        "size": 12,
+        "color": "#000000",
+        "path": null
+    },
+    "display": {
+        "margin_top": 55,
+        "margin_right": 15,
+        "width": 95,
+        "height": 40
+    }
+}

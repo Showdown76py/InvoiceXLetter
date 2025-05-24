@@ -1,4 +1,13 @@
 /.DS_Store
 /.venv
+/.vscode
+__pycache__/
+*.pyc
+
 /ebay-documents*.pdf
 /out.txt
+config*.json
+regex.txt
+!example_config.json
+.env
+*.ttf

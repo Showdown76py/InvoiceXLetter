@@ -6,7 +6,7 @@ import io
 import enum
 
 from pdfminer.high_level import extract_pages
-from pdfminer.layout import LTTextBox, LTTextLine
+from pdfminer.layout import LTTextBox
 
 
 class ExtractionType(enum.Enum):
@@ -16,7 +16,7 @@ class ExtractionType(enum.Enum):
 
 
 def extract_text_custom(
-    pdf_path: str, extraction_type: ExtractionType, search_string: str
+    pdf_path: str, extraction_type: ExtractionType, skip: int, search_string: str
 ) -> str:
     """
     Extracts text from a PDF file according to the extraction type and search string.
@@ -30,32 +30,31 @@ def extract_text_custom(
     """
     output = io.StringIO()
     try:
-        for page_num, page_layout in enumerate(extract_pages(pdf_path)):
+        for page_layout in extract_pages(pdf_path):
             # Collect all textboxes as objects and as text
             textboxes = [
                 element for element in page_layout if isinstance(element, LTTextBox)
             ]
-            textbox_texts = []
+            textbox_texts: list[str] = []
             for tb in textboxes:
                 lines = [
                     text_line.get_text().strip()
                     for text_line in tb
-                    if isinstance(text_line, LTTextLine)
                 ]
                 textbox_texts.append("\n".join([line for line in lines if line]))
 
-            result = []
+            result: list[str] = []
             for idx, tb_text in enumerate(textbox_texts):
                 if extraction_type == ExtractionType.CONTAINS:
                     if search_string in tb_text:
                         result.append(f"{tb_text}")
                 elif extraction_type == ExtractionType.FOLLOWING:
-                    if search_string in tb_text and idx + 1 < len(textbox_texts):
-                        following = textbox_texts[idx + 1]
+                    if search_string in tb_text and idx + 1 + skip < len(textbox_texts):
+                        following = textbox_texts[idx + 1 + skip]
                         result.append(f"{following}")
                 elif extraction_type == ExtractionType.PRECEDING:
-                    if search_string in tb_text and idx - 1 >= 0:
-                        preceding = textbox_texts[idx - 1]
+                    if search_string in tb_text and idx - 1 - skip >= 0:
+                        preceding = textbox_texts[idx - 1 - skip]
                         result.append(f"{preceding}")
             output.write("".join(result))
         return output.getvalue()

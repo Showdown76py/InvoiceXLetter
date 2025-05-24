@@ -5,7 +5,7 @@ This tool dumps the text from each text box in a PDF file to a text file using p
 import sys
 import argparse
 from pdfminer.high_level import extract_pages
-from pdfminer.layout import LTTextBox, LTTextLine
+from pdfminer.layout import LTTextBox
 
 
 def dump_textboxes_from_pdf(pdf_path: str, output_path: str) -> None:
@@ -24,10 +24,9 @@ def dump_textboxes_from_pdf(pdf_path: str, output_path: str) -> None:
                     if isinstance(element, LTTextBox):
                         text_file.write("[TextBox]\n")
                         for text_line in element:
-                            if isinstance(text_line, LTTextLine):
-                                text = text_line.get_text().strip()
-                                if text:
-                                    text_file.write(text + "\n")
+                            text = text_line.get_text().strip()
+                            if text:
+                                text_file.write(text + "\n")
                         text_file.write("\n")
     except Exception as e:
         print(f"Error: {e}")
