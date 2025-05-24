@@ -3,7 +3,7 @@ InvoiceXLetter is a Python script that adds a page on your PDF invoice to includ
 Only DL enveloppes are supported yet.
 
 ## Features
-Reads the first page of a PDF invoice, extracts the recipient's address, and appends it as a new page at the end of the PDF. The new page is formatted to fit an envelope window, with customizable font and layout options.  
+Reads the first page of a PDF invoice, extracts the recipient's address, and appends it as a new page at the end of the PDF. The new page is formatted to fit an envelope window, with customizable font and layout options.
 Additional features include:
 - **Automatic address verification (in France)** using La Poste's API (Okapi).
 - **Support for multiple invoice formats.**
@@ -11,7 +11,7 @@ Additional features include:
 - **Use a different config file** depending on the invoice type/envelope you will be using.
 
 ## Requirements
-- Python 3.6 or higher
+- Python 3.9 or higher
 - reportlab
 - requests
 - pdfminer.six
