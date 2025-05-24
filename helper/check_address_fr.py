@@ -50,7 +50,7 @@ def manual_edit(pre_text: str | list[str] = "") -> str | list[str]:
     return result
 
 
-def check_address(q: str) -> str:
+def check_address(q: str) -> str:  # pylint: disable=R0195
     okapi_key = os.getenv("OKAPI_API_KEY")
     # Check if the API key is valid.
     if not okapi_key or len(okapi_key) < 10:
