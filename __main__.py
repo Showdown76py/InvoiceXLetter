@@ -49,7 +49,7 @@ def main():
     else:
         print('Skipping address check (NOT_IN_FRANCE)')
         r = manual_edit(r)
-        
+
     # create pdf
     output_path = args.pdf_path.with_name(args.pdf_path.stem + "_window.pdf")
     if isinstance(r, list):
