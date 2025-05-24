@@ -3,7 +3,9 @@ This uses La Poste's API to validate French addresses.
 """
 
 import time
-import requests, os, re
+import requests
+import os
+import re
 import tempfile
 from dotenv import load_dotenv
 

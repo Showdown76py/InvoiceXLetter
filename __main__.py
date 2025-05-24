@@ -1,4 +1,5 @@
-import os, time
+import os
+import time
 from argparse import ArgumentParser
 from pathlib import Path
 from classes.config import Config
