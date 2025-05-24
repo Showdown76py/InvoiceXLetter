@@ -50,7 +50,12 @@ def manual_edit(pre_text: str | list[str] = "") -> str | list[str]:
     return result
 
 
-def check_address(q: str):
+def check_address(q: str) -> str:
+    okapi_key = os.getenv("OKAPI_API_KEY")
+    # Check if the API key is valid.
+    if not okapi_key or len(okapi_key) < 10:
+        print('Ignoring French address check, no valid API key found.')
+        return q
     wq = "\n".join(q.splitlines()[1:-1])
     # Remove everything after the 1st space on the last line
     wq = wq.splitlines()[:-1] + [" ".join(wq.splitlines()[-1].split(" ", 1)[:1])]
@@ -58,7 +63,7 @@ def check_address(q: str):
     resp = requests.get(
         "https://api.laposte.fr/controladresse/v2/adresses",
         headers={
-            "X-Okapi-Key": os.getenv("OKAPI_API_KEY"),
+            "X-Okapi-Key": okapi_key,
         },
         params={
             "q": wq,
@@ -95,7 +100,7 @@ def check_address(q: str):
         resp = requests.get(
             "https://api.laposte.fr/controladresse/v2/adresses/" + code,
             headers={
-                "X-Okapi-Key": os.getenv("OKAPI_API_KEY"),
+                "X-Okapi-Key": okapi_key,
             },
             timeout=10
         )
