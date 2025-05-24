@@ -1,7 +1,7 @@
 import json
 import os
 
-from classes.config import *
+from classes.config import Config, FontConfig, Display, ExtractionType
 
 
 def load_config(path: str = "config.json") -> tuple[Config, str]:
