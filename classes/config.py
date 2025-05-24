@@ -1,8 +1,8 @@
-import dataclasses
+from dataclasses import dataclass
 from helper.extractor import ExtractionType
 
 
-@dataclasses.dataclass
+@dataclass
 class FontConfig:
     name: str
     size: int
@@ -10,7 +10,7 @@ class FontConfig:
     path: str | None = None  # Optional path for custom fonts
 
 
-@dataclasses.dataclass
+@dataclass
 class Display:
     margin_top: int
     margin_right: int
@@ -18,7 +18,7 @@ class Display:
     height: int
 
 
-@dataclasses.dataclass
+@dataclass
 class Config:
     extraction_type: ExtractionType
     search_string: str

@@ -18,7 +18,8 @@ disable=
     wrong-import-order,
     redefined-outer-name,
     global-statement,
-    consider-using-f-string
+    consider-using-f-string,
+    unsupported-binary-operation
 
 [FORMAT]
 # Allow longer lines

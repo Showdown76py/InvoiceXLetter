@@ -63,6 +63,7 @@ def check_address(q: str):
         params={
             "q": wq,
         },
+        timeout=10
     )
 
     if resp.status_code != 200:
@@ -96,6 +97,7 @@ def check_address(q: str):
             headers={
                 "X-Okapi-Key": os.getenv("OKAPI_API_KEY"),
             },
+            timeout=10
         )
         if resp.status_code != 200:
             raise Exception(f"Error {resp.status_code}: {resp.text}")
